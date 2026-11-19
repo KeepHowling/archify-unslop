@@ -115,12 +115,11 @@ export async function extractBrand(url, outputPath) {
     const textOnWhite = ensureContrast(accent, '#ffffff');
     const textOnDark = ensureContrast(accent, '#0f0f10');
 
-    // "Lesser modification" = higher original contrast ratio with the respective bg
+    // Choose accentText: use the ensureContrast result for the bg that required
+    // fewer adjustments (higher original contrast ratio = closer to passing already).
     const ratioWithWhite = contrastRatio(accent, '#ffffff');
     const ratioWithDark = contrastRatio(accent, '#0f0f10');
-    // Choose the background where the accent color is closer to meeting the threshold
-    // (fewer adjustments needed = naturally higher contrast with that bg)
-    const accentText = ratioWithDark >= ratioWithWhite ? '#0f0f10' : '#ffffff';
+    const accentText = ratioWithDark >= ratioWithWhite ? textOnDark : textOnWhite;
 
     const fontFamily = cleanFontFamily(raw.fontFamily) || 'Inter';
     const radiusMd = parseRadius(raw.radiusMd) || '10px';
