@@ -31,7 +31,11 @@ export async function extractBrand(url, outputPath) {
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     );
 
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    try {
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 20000 });
+    } catch (err) {
+      throw new Error(`Failed to navigate to ${url}: ${err.message}`);
+    }
 
     const raw = await page.evaluate(() => {
       const cs = window.getComputedStyle(document.documentElement);

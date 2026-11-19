@@ -6,8 +6,12 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const ARCHIFY_CLI      = 'C:\\Users\\Seguridad\\.claude\\skills\\archify\\bin\\archify.mjs';
-const ARCHIFY_TEMPLATE = 'C:\\Users\\Seguridad\\.claude\\skills\\archify\\assets\\template.html';
+const ARCHIFY_CLI      = process.env.ARCHIFY_SKILL_PATH
+  ? path.join(process.env.ARCHIFY_SKILL_PATH, 'bin', 'archify.mjs')
+  : 'C:\\Users\\Seguridad\\.claude\\skills\\archify\\bin\\archify.mjs';
+const ARCHIFY_TEMPLATE = process.env.ARCHIFY_SKILL_PATH
+  ? path.join(process.env.ARCHIFY_SKILL_PATH, 'assets', 'template.html')
+  : 'C:\\Users\\Seguridad\\.claude\\skills\\archify\\assets\\template.html';
 const OUR_TEMPLATE     = path.join(__dirname, '..', 'assets', 'template.html');
 
 const args = process.argv.slice(2);
@@ -42,8 +46,19 @@ for (let i = 0; i < args.length; i++) {
   }
 }
 
-// Determine output HTML path: for 'render architecture <input> <output>', it is forwardArgs[3]
-const outputHtml = forwardArgs[3] ?? null;
+// Determine output HTML path: last positional arg (not a flag and not preceded by a flag)
+// e.g. 'render architecture <input> <output>' — output is forwardArgs[3] in nominal case,
+// but we parse positionals to handle flags before the output path.
+const outputHtml = (() => {
+  const positionals = [];
+  for (let i = 0; i < forwardArgs.length; i++) {
+    if (!forwardArgs[i].startsWith('-') && !forwardArgs[i - 1]?.startsWith('-')) {
+      positionals.push(forwardArgs[i]);
+    }
+  }
+  // positionals: [subcommand, type, input, output]
+  return positionals[3] ?? null;
+})();
 
 // Backup Archify template in memory
 const archifyTemplateBackup = fs.readFileSync(ARCHIFY_TEMPLATE);
@@ -83,4 +98,8 @@ if (brandValue && outputHtml && result.status === 0) {
   fs.writeFileSync(outputHtml, injected, 'utf8');
 }
 
-process.exit(result.status ?? 0);
+if (result.error) {
+  console.error(`archify-unslop: failed to spawn Archify: ${result.error.message}`);
+  process.exit(1);
+}
+process.exit(result.status ?? 1);
