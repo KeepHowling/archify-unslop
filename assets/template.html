@@ -213,41 +213,6 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       --color-error:           #a03030;
     }
   </style>
-  <style id="archify-unslop-bridge">
-    /* Bridge: map Archify's internal vars to Unslop tokens */
-    :root {
-      --bg: var(--color-bg);
-      --surface: var(--color-surface);
-      --surface-raised: var(--color-surface-raised);
-      --border: var(--color-border);
-      --text: var(--color-text-primary);
-      --text-secondary: var(--color-text-secondary);
-      --text-muted: var(--color-text-muted);
-      --accent: var(--color-accent);
-      --accent-text: var(--color-accent-text);
-      font-family: var(--font-ui);
-    }
-
-    /* Remove Archify glows and colored shadows */
-    .node-card,
-    .boundary-box,
-    [class*="preset-"] .diagram-container {
-      box-shadow: none !important;
-    }
-
-    /* Remove radial-gradient glows on body/background */
-    body::before,
-    body::after,
-    .diagram-bg {
-      background: none !important;
-    }
-
-    /* Apply font-ui to body */
-    body {
-      font-family: var(--font-ui) !important;
-      background: var(--color-bg);
-    }
-  </style>
   <style>
     /* ==========================================================
        THEME VARIABLES — switch by toggling [data-theme] on <html>
@@ -5163,6 +5128,38 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
       }
       .relationship-pulse-overlay { display: none !important; }
       svg [data-node-id], svg [data-edge-from], svg [data-detail], svg [data-detail-anchor], svg [data-legend-hit], svg { transition: none !important; }
+    }
+  </style>
+  <style id="archify-unslop-bridge">
+    /* Bridge: map Archify's internal vars to Unslop tokens — must be last to win cascade */
+    :root {
+      --bg: var(--color-bg);
+      --surface: var(--color-surface);
+      --surface-raised: var(--color-surface-raised);
+      --border: var(--color-border);
+      --text: var(--color-text-primary);
+      --text-secondary: var(--color-text-secondary);
+      --text-muted: var(--color-text-muted);
+      --accent: var(--color-accent);
+      --accent-text: var(--color-accent-text);
+      font-family: var(--font-ui);
+    }
+
+    .node-card,
+    .boundary-box,
+    [class*="preset-"] .diagram-container {
+      box-shadow: none !important;
+    }
+
+    body::before,
+    body::after,
+    .diagram-bg {
+      background: none !important;
+    }
+
+    body {
+      font-family: var(--font-ui) !important;
+      background: var(--color-bg);
     }
   </style>
 </head>
