@@ -1,0 +1,9 @@
+{
+  "name": "archify-unslop",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "archify-unslop": "./bin/archify-unslop.mjs" },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}
